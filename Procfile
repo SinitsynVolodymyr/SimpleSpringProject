@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes com.Application
+web: java -jar ./target/hw4-1.0.0.jar
