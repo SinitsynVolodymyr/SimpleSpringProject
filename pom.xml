@@ -29,6 +29,8 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+
     </dependencies>
 
 
@@ -50,15 +52,14 @@
                             <mainClass>com.Application</mainClass>
                             <name>worker</name>
                         </program>
-                        <program>
-                            <mainClass>OneOffProcess</mainClass>
-                            <name>oneoff</name>
-                        </program>
                     </programs>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase><goals><goal>assemble</goal></goals>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
