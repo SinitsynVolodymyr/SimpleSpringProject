@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 
     public static void main(String[] args) {
+        /*
         SpringApplication app = new SpringApplication(Application.class);
         String port = System.getenv("PORT");
         System.out.println("<<<<<<<<<<<<<<<<<<<MY PORT: "+port+" >>>>>>>>>>>>>>>>>>>");
@@ -20,7 +21,7 @@ public class Application {
 
         app.setDefaultProperties(Collections
                 .singletonMap("server.port", port));
-        //app.run(args);
+        app.run(args);*/
         SpringApplication.run(Application.class, args);
     }
 
