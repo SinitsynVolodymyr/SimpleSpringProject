@@ -1,1 +1,1 @@
-web: java -jar ./target/hw4-1.0.0.jar -Dserver.port=$PORT
+web: java $JAVA_OPTS -jar ./target/hw4-1.0.0.jar -Dserver.port=$PORT
