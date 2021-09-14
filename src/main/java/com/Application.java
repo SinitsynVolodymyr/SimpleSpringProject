@@ -11,6 +11,10 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
+        String port = System.getenv("PORT");
+        System.out.println("<<<<<<<<<<<<<<<<<<<MY PORT: "+port+" >>>>>>>>>>>>>>>>>>>");
+        app.setDefaultProperties(Collections
+                .singletonMap("server.port", port));
         app.run(args);
     }
 
