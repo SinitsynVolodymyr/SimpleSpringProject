@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "t_user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String username;
     private String password;
@@ -19,8 +19,14 @@ public class User implements UserDetails {
     private String passwordConfirm;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private SocialNetwork socialNetworks;
 
     public User() {
+    }
+
+    public User(String username) {
+        this.username = username;
     }
 
     public Long getId() {
@@ -88,5 +94,13 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public SocialNetwork getSocialNetworks() {
+        return socialNetworks;
+    }
+
+    public void setSocialNetworks(SocialNetwork socialNetworks) {
+        this.socialNetworks = socialNetworks;
     }
 }

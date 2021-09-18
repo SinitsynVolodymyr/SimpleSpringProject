@@ -1,7 +1,9 @@
 package com.service;
 
 import com.entity.Role;
+import com.entity.SocialNetwork;
 import com.entity.User;
+import com.exception.SocialNetworkNotFoundException;
 import com.repo.RoleRepository;
 import com.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class UserService implements UserDetailsService {
     UserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    SocialNetworkService socialNetworkService;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -55,8 +59,14 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
+
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        try {
+            user.setSocialNetworks(socialNetworkService.loadSocialNetworkByName(user.getSocialNetworks().getName()));
+        } catch (SocialNetworkNotFoundException e) {
+            e.printStackTrace();
+        }
+        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
     }
