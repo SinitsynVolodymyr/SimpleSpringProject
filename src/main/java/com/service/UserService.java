@@ -10,9 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import sun.util.resources.LocaleData;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +60,7 @@ public class UserService implements UserDetailsService {
         SocialNetwork userSoc = user.getSocialNetwork();
         SocialNetwork socialNetworkFromBD = socialNetworkService.loadSocialNetworkByName(userSoc.getName());
         user.setSocialNetwork(socialNetworkFromBD);
+        user.setRegisteredDate(LocalDate.now());
         userRepository.save(user);
         return true;
     }

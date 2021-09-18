@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ public class User implements UserDetails {
     @ManyToOne(fetch = FetchType.EAGER)
     private SocialNetwork socialNetwork;
     String socIdentifier;
+    LocalDate registeredDate;
 
     public User() {
     }
@@ -111,5 +113,13 @@ public class User implements UserDetails {
 
     public void setSocialNetwork(SocialNetwork socialNetwork) {
         this.socialNetwork = socialNetwork;
+    }
+
+    public LocalDate getRegisteredDate() {
+        return registeredDate;
+    }
+
+    public void setRegisteredDate(LocalDate registeredDate) {
+        this.registeredDate = registeredDate;
     }
 }

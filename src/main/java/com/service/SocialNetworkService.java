@@ -28,12 +28,14 @@ public class SocialNetworkService{
 
     public SocialNetwork loadSocialNetworkByName(String socialNetworkName) throws SocialNetworkNotFoundException {
         SocialNetwork socialNetwork = socialNetworkRepository.findByName(socialNetworkName);
-
         if (socialNetwork == null) {
             throw new SocialNetworkNotFoundException("SocialNetwork "+socialNetworkName+" not found");
         }
-
         return socialNetwork;
+    }
+
+    public List<SocialNetwork> allSocialNetwork(){
+       return socialNetworkRepository.findAll();
     }
 
 }
