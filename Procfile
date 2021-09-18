@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar ./target/SpringProject-0.0.1-SNAPSHOT.jar -Dserver.port=$PORT
+web: java $JAVA_OPTS -jar ./target/SpringProject-1.0.0.jar -Dserver.port=$PORT
