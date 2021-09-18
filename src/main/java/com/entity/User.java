@@ -20,7 +20,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
     @ManyToOne(fetch = FetchType.EAGER)
-    private SocialNetwork socialNetworks;
+    private SocialNetwork socialNetwork;
+    String socIdentifier;
 
     public User() {
     }
@@ -96,11 +97,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public SocialNetwork getSocialNetworks() {
-        return socialNetworks;
+    public String getSocIdentifier() {
+        return socIdentifier;
     }
 
-    public void setSocialNetworks(SocialNetwork socialNetworks) {
-        this.socialNetworks = socialNetworks;
+    public void setSocIdentifier(String socIdentifier) {
+        this.socIdentifier = socIdentifier;
+    }
+
+    public SocialNetwork getSocialNetwork() {
+        return socialNetwork;
+    }
+
+    public void setSocialNetwork(SocialNetwork socialNetwork) {
+        this.socialNetwork = socialNetwork;
     }
 }

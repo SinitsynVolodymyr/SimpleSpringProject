@@ -4,13 +4,11 @@ import com.entity.Role;
 import com.entity.SocialNetwork;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
-import com.repo.RoleRepository;
 import com.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -26,11 +24,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    RoleRepository roleRepository;
-    @Autowired
     SocialNetworkService socialNetworkService;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -52,21 +46,17 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public boolean saveUser(User user) {
+    public boolean saveUser(User user) throws SocialNetworkNotFoundException {
         User userFromDB = userRepository.findByUsername(user.getUsername());
 
         if (userFromDB != null) {
             return false;
         }
 
-
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        try {
-            user.setSocialNetworks(socialNetworkService.loadSocialNetworkByName(user.getSocialNetworks().getName()));
-        } catch (SocialNetworkNotFoundException e) {
-            e.printStackTrace();
-        }
-        //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        SocialNetwork userSoc = user.getSocialNetwork();
+        SocialNetwork socialNetworkFromBD = socialNetworkService.loadSocialNetworkByName(userSoc.getName());
+        user.setSocialNetwork(socialNetworkFromBD);
         userRepository.save(user);
         return true;
     }
