@@ -7,12 +7,32 @@
 </head>
 <body>
 <h1>Home</h1>
-<h2 th:utext="${amountUsers}"></h2>
 
-<div th:each="socCount : ${socCountList}">
-  <h3><span th:text="${socCount}"> Message </span></h3>
-</div>
-
+<table border="2">
+  <thead>
+  <tr>
+    <th> Имя пользователя </th>
+    <th> Индентификатор </th>
+    <th> Соцыальная сеть </th>
+    <th> Дата первого входа </th>
+    <th> Дата последнего входа </th>
+    <th> Статус </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:if="${userList.empty}">
+    <td colspan="2"> No user available </td>
+  </tr>
+  <tr th:each="user : ${userList}">
+    <td><span th:text="${user.username}"> username </span></td>
+    <td><span th:text="${user.socIdentifier}"> socIdentifier </span></td>
+    <td><span th:text="${user.socialNetwork.name}"> socialNetwork </span></td>
+    <td><span th:text="${user.registeredDate}"> registeredDate </span></td>
+    <td><span th:text="${user.registeredDate}"> registeredDate </span></td>
+    <td><span > Status </span></td>
+  </tr>
+  </tbody>
+</table>
 
 </body>
 

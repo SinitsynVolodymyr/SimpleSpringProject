@@ -21,28 +21,14 @@ public class HomeController {
     @Autowired
     SocialNetworkService socialNetworkService;
 
-    private String messageFormat = "На сайте заригистрировалось %s человек.";
-    private String messageSocFormat = "Из них в %s: %d человек.";
-
     @GetMapping
     public String getPage(Model model){
 
         List<User> users = userService.allUsers();
-        List<String> socMessages = getSocMessages(users);
-        model.addAttribute("socCountList",socMessages);
 
-        model.addAttribute("amountUsers", String.format(messageFormat,users.size()));
+        model.addAttribute("userList",users);
+
         return "home";
-    }
-
-    private List<String> getSocMessages(List<User> users) {
-        List<String> socCountMessages = new ArrayList<>();
-        socialNetworkService.allSocialNetwork().stream().forEach((soc)->{
-            long count = users.stream().filter(user -> user.getSocialNetwork().equals(soc)).count();
-            String message = String.format(messageSocFormat, soc.getName(), count);
-            socCountMessages.add(message);
-        });
-        return socCountMessages;
     }
 
 

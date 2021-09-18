@@ -29,7 +29,7 @@ public class IndexController {
         model.addAttribute("socCountList",socMessages);
 
         model.addAttribute("amountUsers", String.format(messageFormat,users.size()));
-        return "home";
+        return "index";
     }
 
     private List<String> getSocMessages(List<User> users) {

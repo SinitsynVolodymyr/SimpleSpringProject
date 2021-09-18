@@ -1,5 +1,6 @@
 package com.config;
 
+import com.entity.Role;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
 import com.repo.UserRepository;
@@ -15,6 +16,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.time.LocalDate;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -61,6 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             User user = userRepository.findBySocIdentifier(id).orElseGet(() -> {
                 User result = new User(name);
                 result.setSocIdentifier(id);
+                result.setRegisteredDate(LocalDate.now());
+                result.setRoles(Collections.singleton(new Role(1L, "user")));
                 try {
                     result.setSocialNetwork(socialNetworkService.loadSocialNetworkByName("google"));
                 } catch (SocialNetworkNotFoundException e) {
@@ -69,6 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 userRepository.save(result);
                 return result;
             });
+            user.setVisitDate(LocalDate.now());
             return user;
         };
     }

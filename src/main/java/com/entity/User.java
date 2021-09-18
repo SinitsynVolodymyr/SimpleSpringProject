@@ -24,6 +24,7 @@ public class User implements UserDetails {
     private SocialNetwork socialNetwork;
     String socIdentifier;
     LocalDate registeredDate;
+    LocalDate visitDate;
 
     public User() {
     }
@@ -121,5 +122,13 @@ public class User implements UserDetails {
 
     public void setRegisteredDate(LocalDate registeredDate) {
         this.registeredDate = registeredDate;
+    }
+
+    public LocalDate getVisitDate() {
+        return visitDate;
+    }
+
+    public void setVisitDate(LocalDate visitDate) {
+        this.visitDate = visitDate;
     }
 }
