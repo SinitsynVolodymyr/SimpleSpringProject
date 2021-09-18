@@ -6,8 +6,13 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
-<h1>Welcome</h1>
+<h1>Home</h1>
 <h2 th:utext="${amountUsers}"></h2>
+
+<div th:each="socCount : ${socCountList}">
+  <h3><span th:text="${socCount}"> Message </span></h3>
+</div>
+
 
 </body>
 
