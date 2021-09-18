@@ -24,16 +24,7 @@ public class HomeController {
 
     @GetMapping
     public String unlogHome(Model model){
-        ModelAndView modelAndView = new ModelAndView();
-        User user = new User("Biba"+new Random().nextInt(100000));
-        SocialNetwork facebook = new SocialNetwork("facebook");
-        user.setSocialNetwork(facebook);
-        user.setSocIdentifier(UUID.randomUUID().toString());
-        try {
-            userService.saveUser(user);
-        } catch (SocialNetworkNotFoundException e) {
-            return "Соціальна мережа не знадена";
-        }
+
         model.addAttribute("amountUsers", String.format(messageFormat,userService.allUsers().size()));
         return "unlogHome";
     }

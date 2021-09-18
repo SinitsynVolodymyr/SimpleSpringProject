@@ -1,7 +1,9 @@
 package com.config;
 
 import com.entity.User;
+import com.exception.SocialNetworkNotFoundException;
 import com.repo.UserRepository;
+import com.service.SocialNetworkService;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -20,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserService userService;
+    @Autowired
+    SocialNetworkService socialNetworkService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -29,10 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/login").not().fullyAuthenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/news").hasRole("USER")
-                //Доступ разрешен всем пользователей
-                .antMatchers("/", "/resources/**").permitAll()
+                .antMatchers("/admin/**").hasRole("admin")
+                .antMatchers("/info").hasAnyRole()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
@@ -40,19 +42,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 //Перенарпавление на главную страницу после успешного входа
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/home")
                 .permitAll()
                 .and()
                 .logout()
                 .permitAll()
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
 
     }
 
     @Bean
     PrincipalExtractor principalExtractor(UserRepository userRepository){
+
         return map -> {
-            return new User();
+            String id = map.get("sub").toString();
+            String name = map.get("name").toString();
+
+            User user = userRepository.findBySocIdentifier(id).orElseGet(() -> {
+                User result = new User(name);
+                result.setSocIdentifier(id);
+                try {
+                    result.setSocialNetwork(socialNetworkService.loadSocialNetworkByName("google"));
+                } catch (SocialNetworkNotFoundException e) {
+                    return null;
+                }
+                userRepository.save(result);
+                return result;
+            });
+            return user;
         };
     }
 
