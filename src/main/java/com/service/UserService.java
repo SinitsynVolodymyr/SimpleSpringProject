@@ -63,6 +63,21 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
+    public boolean updateUser(User user) throws SocialNetworkNotFoundException {
+        User userFromDB = userRepository.findByUsername(user.getUsername());
+
+        if (userFromDB == null) {
+            return false;
+        }
+
+        SocialNetwork userSoc = user.getSocialNetwork();
+        SocialNetwork socialNetworkFromBD = socialNetworkService.loadSocialNetworkByName(userSoc.getName());
+        user.setSocialNetwork(socialNetworkFromBD);
+        user.setRegisteredDate(LocalDate.now());
+        userRepository.save(user);
+        return true;
+    }
+
     public boolean deleteUser(Long userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);

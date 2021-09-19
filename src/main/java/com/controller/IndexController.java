@@ -4,6 +4,8 @@ import com.entity.User;
 import com.service.SocialNetworkService;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,10 @@ public class IndexController {
 
     @GetMapping
     public String getPage(Model model){
-
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getPrincipal() instanceof User){
+            return "redirect:/home";
+        }
         List<User> users = userService.allUsers();
         List<String> socMessages = getSocMessages(users);
         model.addAttribute("socCountList",socMessages);

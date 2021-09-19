@@ -21,6 +21,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
     @ManyToOne(fetch = FetchType.EAGER)
+    private Status status;
+    @ManyToOne(fetch = FetchType.EAGER)
     private SocialNetwork socialNetwork;
     String socIdentifier;
     LocalDate registeredDate;
@@ -130,5 +132,13 @@ public class User implements UserDetails {
 
     public void setVisitDate(LocalDate visitDate) {
         this.visitDate = visitDate;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

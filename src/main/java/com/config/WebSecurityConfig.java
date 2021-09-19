@@ -1,8 +1,11 @@
 package com.config;
 
 import com.entity.Role;
+import com.entity.Status;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
+import com.repo.RoleRepository;
+import com.repo.StatusRepository;
 import com.repo.UserRepository;
 import com.service.SocialNetworkService;
 import com.service.UserService;
@@ -13,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,23 +32,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     UserService userService;
     @Autowired
     SocialNetworkService socialNetworkService;
+    @Autowired
+    StatusRepository statusRepository;
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**","/js/**","/fonts/**","/images/**");
+    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+
         httpSecurity.csrf()
                 .disable()
                 .authorizeRequests()
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/login").not().fullyAuthenticated()
-                //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**").hasRole("admin")
-                .antMatchers("/info").hasAnyRole()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
                 //Настройка для входа в систему
                 .formLogin()
                 .loginPage("/login")
+                .successForwardUrl("/home")
                 //Перенарпавление на главную страницу после успешного входа
                 .permitAll()
                 .and()
@@ -53,6 +65,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
 
+/*
+        httpSecurity
+                .authorizeRequests()
+                .mvcMatchers("/").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .csrf().disable();
+                */
     }
 
     @Bean
@@ -66,16 +86,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 User result = new User(name);
                 result.setSocIdentifier(id);
                 result.setRegisteredDate(LocalDate.now());
-                result.setRoles(Collections.singleton(new Role(1L, "user")));
+                result.setRoles(Collections.singleton(roleRepository.findByName(Role.USER.getName())));
+                result.setStatus(statusRepository.findByName(Status.NORMAL.getName()));
                 try {
                     result.setSocialNetwork(socialNetworkService.loadSocialNetworkByName("google"));
                 } catch (SocialNetworkNotFoundException e) {
                     return null;
                 }
-                userRepository.save(result);
                 return result;
             });
             user.setVisitDate(LocalDate.now());
+            userRepository.save(user);
             return user;
         };
     }

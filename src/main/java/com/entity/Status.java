@@ -7,27 +7,27 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "t_role")
-public class Role implements GrantedAuthority {
-    public static final Role USER = new Role("user");
-    public static final Role ADMIN = new Role("admin");
+@Table(name = "t_status")
+public class Status implements GrantedAuthority {
+    public static final Status NORMAL = new Status("normal");
+    public static final Status BLOCK = new Status("block");
 
     @Id
     private Long id;
     private String name;
 
-    public Role() {
+    public Status() {
     }
 
-    public Role(Long id) {
+    public Status(Long id) {
         this.id = id;
     }
 
-    public Role(String name) {
+    public Status(String name) {
         this.name = name;
     }
 
-    public Role(Long id, String name) {
+    public Status(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -57,8 +57,8 @@ public class Role implements GrantedAuthority {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return Objects.equals(name, role.name);
+        Status status = (Status) o;
+        return name.equals(status.name);
     }
 
     @Override
