@@ -43,7 +43,7 @@
   <tr th:each="user, iState :  ${userList}">
     <td><input type="checkbox" name="checkUserId" th:id_user="${user.id}"></input></td>
     <td><span th:text="${user.username}"> username </span></td>
-    <td><span th:text="${user.socIdentifier}"> socIdentifier </span></td>
+    <td><span th:text="${user.id}"> socIdentifier </span></td>
     <td><span th:text="${user.socialNetwork.name}"> socialNetwork </span></td>
     <td><span th:text="${user.registeredDate}"> registeredDate </span></td>
     <td><span th:text="${user.visitDate}"> registeredDate </span></td>
