@@ -25,11 +25,16 @@ public class HomeController {
     SocialNetworkService socialNetworkService;
 
     @GetMapping
-    public String getPage(Model model) throws UserInDBNotFoundException {
+    public String getPage(Model model)  {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        try {
             if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
+        } catch (UserInDBNotFoundException e) {
+            auth.setAuthenticated(false);
+            return "redirect:/";
+        }
 
 
         List<User> users = userService.allUsers();

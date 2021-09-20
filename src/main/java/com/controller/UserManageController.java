@@ -61,24 +61,18 @@ public class UserManageController {
         return "redirect:/";
     }
 
-    @DeleteMapping
-    public String delete(Model model){
+    @PostMapping("delete")
+    public String delete(@RequestBody Map<String,String> blockUsers) throws UserInDBNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        try {
-            if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
-        } catch (UserInDBNotFoundException e) {
-            e.printStackTrace();
+        User user = userService.loadUserByAuth(auth);
+        if (userService.isBlocked(user)) return "redirect:/block";
+        blockUsers.values().stream().forEach(userId -> {
+            userService.deleteUser(Long.valueOf(userId));
+        });
+        if (blockUsers.values().stream().filter(id-> user.getId().equals(Long.valueOf(id))).count()>0){
+            return "redirect:/logout";
         }
-
-        User user = null;
-        try {
-            user = userService.loadUserByAuth(auth);
-        } catch (UserInDBNotFoundException e) {
-            e.printStackTrace();
-        }
-        userService.deleteUser(user.getId());
-
-        return "logout";
+        return "redirect:/";
     }
 
 
