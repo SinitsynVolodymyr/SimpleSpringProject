@@ -28,9 +28,11 @@ public class HomeController {
     public String getPage(Model model)  {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
+        String thisUsername="";
         try {
-            if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
+            User user = userService.loadUserByAuth(auth);
+            thisUsername = user.getUsername();
+            if (userService.isBlocked(user)) return "redirect:/block";
         } catch (UserInDBNotFoundException e) {
             auth.setAuthenticated(false);
             return "redirect:/";
@@ -40,6 +42,7 @@ public class HomeController {
         List<User> users = userService.allUsers();
 
         model.addAttribute("userList",users);
+        model.addAttribute("username",thisUsername);
 
         return "home";
     }
