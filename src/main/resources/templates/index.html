@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Home</h1>
-
+<h3>
 <div class="container unauthenticated">
   With GitHub: <a href="/oauth2/authorization/github">click here</a>
 </div>
@@ -16,6 +16,15 @@
 <div class="container unauthenticated">
   With Facebook: <a href="/oauth2/authorization/facebook">click here</a>
 </div>
+</h3>
+
+<br>
+<h2 th:utext="${amountUsers}"></h2>
+<br>
+<div th:each="socCount : ${socCountList}">
+  <h3><span th:text="${socCount}"> Message </span></h3>
+</div>
+
 
 
 </body>
