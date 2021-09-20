@@ -59,6 +59,8 @@ public class LoginSuccessController {
         Map<String, Object> attributes = authority.getAttributes();
         String socName = ((OAuth2AuthenticationToken) auth).getAuthorizedClientRegistrationId();
 
+        System.out.println(attributes.toString());
+
         String id = attributes.get("sub").toString();
         String name = attributes.get("given_name").toString();
 
