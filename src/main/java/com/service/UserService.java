@@ -6,6 +6,7 @@ import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
 import com.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,6 +37,29 @@ public class UserService implements UserDetailsService {
         }
 
         return user;
+    }
+
+
+
+
+    public User loadUserBySocId(String socId) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findBySocIdentifier(socId);
+
+        if (user.get() == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user.get();
+    }
+
+    public User loadUserByAuth(Authentication auth) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findBySocIdentifier(auth.getName());
+
+        if (user.get() == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user.get();
     }
 
     public User findUserById(Long userId) {

@@ -24,40 +24,43 @@ public class UserManageController {
     @Autowired
     StatusRepository statusRepository;
 
-    @PostMapping
-    public String block(Model model){
+    @PostMapping("block")
+    public String block(@RequestBody Map<String,String> blockUsers){
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
-        user.setStatus(statusRepository.findByName(Status.BLOCK.getName()));
-        try {
-            userService.updateUser(user);
-        } catch (SocialNetworkNotFoundException e) {
-            e.printStackTrace();
-        }
+        blockUsers.values().stream().forEach(userId -> {
+            User user = userService.findUserById(Long.valueOf(userId));
+            user.setStatus(statusRepository.findByName(Status.BLOCK.getName()));
+            try {
+                userService.updateUser(user);
+            } catch (SocialNetworkNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
-        return "forward:/logout";
+        return "redirect:/";
     }
 
-    @GetMapping({"id"})
-    public String unblock(@PathVariable String id){
+    @PostMapping("unblock")
+    public String unblock(@RequestBody Map<String,String> blockUsers){
 
-        User userById = userService.findUserById(Long.valueOf(id));
-        userById.setStatus(Status.NORMAL);
-        try {
-            userService.saveUser(userById);
-        } catch (SocialNetworkNotFoundException e) {
-            e.printStackTrace();
-        }
+        blockUsers.values().stream().forEach(userId -> {
+            User user = userService.findUserById(Long.valueOf(userId));
+            user.setStatus(statusRepository.findByName(Status.NORMAL.getName()));
+            try {
+                userService.updateUser(user);
+            } catch (SocialNetworkNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
 
-        return "home";
+        return "redirect:/";
     }
 
     @DeleteMapping
     public String delete(Model model){
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) auth.getPrincipal();
+        User user = userService.loadUserByAuth(auth);
         userService.deleteUser(user.getId());
 
         return "logout";

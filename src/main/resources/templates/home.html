@@ -3,22 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>Welcome</title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 </head>
 <body>
 <h1>Home</h1>
 
-<form action="manage" method="post">
-  <div>
-    <button>Block yourself</button>
-  </div>
+<form action="/logout" method="POST">
+  <input type="submit" value="Logout" />
 </form>
 
-<br>
-<br>
-<br>
+  <div>
+    <button onclick="sendBlockJSON()">Заблокировать</button>
+    <button onclick="sendUnblockJSON()">Розблокировать</button>
+  </div>
+
+
+
+
 <table border="2">
   <thead>
   <tr>
+    <th>  </th>
     <th> Имя пользователя </th>
     <th> Индентификатор </th>
     <th> Соцыальная сеть </th>
@@ -31,7 +38,8 @@
   <tr th:if="${userList.empty}">
     <td colspan="2"> No user available </td>
   </tr>
-  <tr th:each="user : ${userList}">
+  <tr th:each="user, iState :  ${userList}">
+    <td><input type="checkbox" name="checkUserId" th:id_user="${user.id}"></input></td>
     <td><span th:text="${user.username}"> username </span></td>
     <td><span th:text="${user.socIdentifier}"> socIdentifier </span></td>
     <td><span th:text="${user.socialNetwork.name}"> socialNetwork </span></td>
@@ -41,6 +49,52 @@
   </tr>
   </tbody>
 </table>
+
+
+<script>
+
+
+
+  function sendBlockJSON() {
+    sendJSON("manage/block");
+  }
+
+  function sendUnblockJSON() {
+    sendJSON("manage/unblock");
+  }
+
+class UserId {
+  constructor() {
+  }
+}
+
+  function sendJSON(url) {
+  let usersCheckBox = document.getElementsByName('checkUserId');
+  let sendJsonArray = new UserId();
+  let index = 0;
+  for (var i = 0; i < usersCheckBox.length; i++) {
+    userCheck = usersCheckBox[i];
+    if (userCheck.checked){
+      index++;
+      console.log(userCheck.getAttribute('id_user'));
+      sendJsonArray['number'+index] = userCheck.getAttribute('id_user');
+    }
+
+  }
+
+    let result = document.querySelector('.result');
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        location.reload();
+      }
+    };
+    var data = JSON.stringify(sendJsonArray);
+    xhr.send(data);
+  }
+</script>
 
 </body>
 

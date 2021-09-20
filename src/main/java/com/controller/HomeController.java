@@ -24,6 +24,8 @@ public class HomeController {
     @GetMapping
     public String getPage(Model model){
 
+
+
         List<User> users = userService.allUsers();
 
         model.addAttribute("userList",users);
