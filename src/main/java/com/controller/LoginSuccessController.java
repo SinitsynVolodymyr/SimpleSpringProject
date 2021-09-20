@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +54,8 @@ public class LoginSuccessController {
     }
 
     private User authUser(Authentication auth){
-        OidcUserAuthority authority = (OidcUserAuthority) auth.getAuthorities().stream().findFirst().get();
+         OAuth2UserAuthority authority = (OAuth2UserAuthority) auth.getAuthorities().stream().findFirst().get();
+        //OidcUserAuthority authority = (OidcUserAuthority) auth.getAuthorities().stream().findFirst().get();
         Map<String, Object> attributes = authority.getAttributes();
         String socName = ((OAuth2AuthenticationToken) auth).getAuthorizedClientRegistrationId();
 
