@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.entity.User;
+import com.exception.UserInDBNotFoundException;
 import com.service.SocialNetworkService;
 import com.service.UserService;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,12 @@ public class IndexController {
 
     @GetMapping
     public String getPage(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
+        } catch (UserInDBNotFoundException e) {
+
+        }
         String isAuthRed = redirect();
         if (isAuthRed != null) return isAuthRed;
         List<User> users = userService.allUsers();

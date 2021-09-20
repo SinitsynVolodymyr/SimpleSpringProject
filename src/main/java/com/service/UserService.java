@@ -2,8 +2,10 @@ package com.service;
 
 import com.entity.Role;
 import com.entity.SocialNetwork;
+import com.entity.Status;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
+import com.exception.UserInDBNotFoundException;
 import com.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -39,7 +41,11 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-
+    public boolean isBlocked(User user){
+        Status status = user.getStatus();
+        if (status.equals(Status.BLOCK)) return true;
+        else return false;
+    }
 
 
     public User loadUserBySocId(String socId) throws UsernameNotFoundException {
@@ -52,11 +58,11 @@ public class UserService implements UserDetailsService {
         return user.get();
     }
 
-    public User loadUserByAuth(Authentication auth) throws UsernameNotFoundException {
+    public User loadUserByAuth(Authentication auth) throws UserInDBNotFoundException {
         Optional<User> user = userRepository.findBySocIdentifier(auth.getName());
 
-        if (user.get() == null) {
-            throw new UsernameNotFoundException("User not found");
+        if (!user.isPresent() || user.get() == null) {
+            throw new UserInDBNotFoundException();
         }
 
         return user.get();

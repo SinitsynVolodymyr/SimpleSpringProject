@@ -4,6 +4,7 @@ import com.entity.Role;
 import com.entity.Status;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
+import com.exception.UserInDBNotFoundException;
 import com.repo.RoleRepository;
 import com.repo.StatusRepository;
 import com.repo.UserRepository;
@@ -41,6 +42,12 @@ public class LoginSuccessController {
     public String getPage(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         authUser(auth);
+
+        try {
+            if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
+        } catch (UserInDBNotFoundException e) {
+
+        }
 
         return "redirect:/";
     }

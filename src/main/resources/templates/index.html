@@ -13,16 +13,7 @@
 <div class="container unauthenticated">
   With Google: <a href="/oauth2/authorization/google">click here</a>
 </div>
-<div class="container authenticated" style="display:none">
-  Logged in as: <span id="user"></span>
-</div>
-<script type="text/javascript">
-    $.get("/user", function(data) {
-        $("#user").html(data.name);
-        $(".unauthenticated").hide()
-        $(".authenticated").show()
-    });
-</script>
+
 
 </body>
 

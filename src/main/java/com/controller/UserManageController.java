@@ -3,6 +3,7 @@ package com.controller;
 import com.entity.Status;
 import com.entity.User;
 import com.exception.SocialNetworkNotFoundException;
+import com.exception.UserInDBNotFoundException;
 import com.repo.StatusRepository;
 import com.service.SocialNetworkService;
 import com.service.UserService;
@@ -25,7 +26,9 @@ public class UserManageController {
     StatusRepository statusRepository;
 
     @PostMapping("block")
-    public String block(@RequestBody Map<String,String> blockUsers){
+    public String block(@RequestBody Map<String,String> blockUsers) throws UserInDBNotFoundException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
 
         blockUsers.values().stream().forEach(userId -> {
             User user = userService.findUserById(Long.valueOf(userId));
@@ -41,7 +44,9 @@ public class UserManageController {
     }
 
     @PostMapping("unblock")
-    public String unblock(@RequestBody Map<String,String> blockUsers){
+    public String unblock(@RequestBody Map<String,String> blockUsers) throws UserInDBNotFoundException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
 
         blockUsers.values().stream().forEach(userId -> {
             User user = userService.findUserById(Long.valueOf(userId));
@@ -58,9 +63,19 @@ public class UserManageController {
 
     @DeleteMapping
     public String delete(Model model){
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.loadUserByAuth(auth);
+        try {
+            if (userService.isBlocked(userService.loadUserByAuth(auth))) return "redirect:/block";
+        } catch (UserInDBNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        User user = null;
+        try {
+            user = userService.loadUserByAuth(auth);
+        } catch (UserInDBNotFoundException e) {
+            e.printStackTrace();
+        }
         userService.deleteUser(user.getId());
 
         return "logout";
