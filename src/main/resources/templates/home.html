@@ -27,7 +27,7 @@
 <table border="2">
   <thead>
   <tr>
-    <th>  </th>
+    <th> <input type="checkbox" name="checkUserIdAll" onclick="allCheckClick()"> </th>
     <th> Имя пользователя </th>
     <th> Индентификатор </th>
     <th> Соцыальная сеть </th>
@@ -56,6 +56,17 @@
 <script>
 
 
+  function allCheckClick() {
+
+   let usersCheckBox = document.getElementsByName('checkUserId');
+    let userCheckBoxAll = document.getElementsByName('checkUserIdAll')[0];
+    let status = userCheckBoxAll.checked;
+
+  for (var i = 0; i < usersCheckBox.length; i++) {
+  usersCheckBox[i].checked = status;
+  }
+
+  }
 
   function sendBlockJSON() {
     sendJSON("manage/block");
@@ -76,6 +87,7 @@ class UserId {
 
   function sendJSON(url) {
   let usersCheckBox = document.getElementsByName('checkUserId');
+
   let sendJsonArray = new UserId();
   let index = 0;
   for (var i = 0; i < usersCheckBox.length; i++) {
