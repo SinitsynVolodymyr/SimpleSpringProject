@@ -70,6 +70,9 @@ public class LoginSuccessController {
         }else if(socName.equalsIgnoreCase("facebook")){
             idTmp = attributes.get("id").toString();
             nameTmp = attributes.get("name").toString();
+        }else if(socName.equalsIgnoreCase("github")){
+            idTmp = attributes.get("id").toString();
+            nameTmp = attributes.get("login").toString();
         }
 
         String id = idTmp;
