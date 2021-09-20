@@ -59,14 +59,26 @@ public class LoginSuccessController {
         Map<String, Object> attributes = authority.getAttributes();
         String socName = ((OAuth2AuthenticationToken) auth).getAuthorizedClientRegistrationId();
 
-        System.out.println(attributes.toString());
 
-        String id = attributes.get("sub").toString();
-        String name = attributes.get("given_name").toString();
+        String idTmp = "";
+        String nameTmp = "";
+
+        System.out.println(attributes.toString());
+        if (socName.equalsIgnoreCase("google")) {
+             idTmp = attributes.get("sub").toString();
+             nameTmp = attributes.get("given_name").toString();
+        }else if(socName.equalsIgnoreCase("facebook")){
+            idTmp = attributes.get("id").toString();
+            nameTmp = attributes.get("name").toString();
+        }
+
+        String id = idTmp;
+        String name = nameTmp;
 
         User user = userRepository.findBySocIdentifier(id).orElseGet(() -> {
             return createNewUser(id, name, socName);
         });
+
         user.setVisitDate(LocalDate.now());
         userRepository.save(user);
         return user;
